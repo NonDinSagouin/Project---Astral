@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 304961808}
   - component: {fileID: 304961809}
+  - component: {fileID: 304961810}
   m_Layer: 0
   m_Name: Bootstrap
   m_TagString: Untagged
@@ -163,6 +164,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26de37c8abf628949980a967e7a652a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Core.Bootstrap.Bootstrapper
+  initialSceneName: MainMenu
+  services: []
+  sceneLoader: {fileID: 304961810}
+--- !u!114 &304961810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304961807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ab28d99ddce84428bdd9377d166b90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.SceneManagement.SceneLoader
+  isLoadingScene: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
