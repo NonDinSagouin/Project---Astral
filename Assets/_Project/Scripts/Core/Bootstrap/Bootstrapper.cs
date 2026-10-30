@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 using Helper;
-using Core.Services;
+using Core.Managers;
 
 namespace Core.Bootstrap
 {
@@ -14,7 +14,7 @@ namespace Core.Bootstrap
     /// </summary>
     public class Bootstrapper : MonoBehaviour
     {
-        [SerializeField] private ServiceSceneLoader sceneLoader;
+        [SerializeField] private SceneLoaderManager sceneLoader;
         [SerializeField] private string[] startSceneName;
 
         [SerializeField] private bool debugMode;
@@ -76,13 +76,13 @@ namespace Core.Bootstrap
                 return;
             }
 
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
             foreach (string sceneName in scenesToRequest)
             {
                 DebugMessage.Log(debugMode, $"Loading initial scene: {sceneName}", this);
                 if (!sceneLoader.LoadScene(sceneName, LoadSceneMode.Additive))
                 {
-                    SceneManager.sceneLoaded -= OnSceneLoaded;
+                    UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
                     throw new InvalidOperationException($"Failed to load initial scene '{sceneName}'.");
                 }
             }
@@ -90,7 +90,7 @@ namespace Core.Bootstrap
 
         void OnDestroy()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
@@ -105,7 +105,7 @@ namespace Core.Bootstrap
                 return;
             }
 
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
             DebugMessage.Log(debugMode, "All initial scenes loaded. Unloading the Bootstrap scene.", this);
             UnloadBootstrapScene();
         }

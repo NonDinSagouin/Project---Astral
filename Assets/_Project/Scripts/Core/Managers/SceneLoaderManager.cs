@@ -4,9 +4,9 @@ using UnityEngine.SceneManagement;
 
 using Helper;
 
-namespace Core.Services
+namespace Core.Managers
 {
-    public class ServiceSceneLoader : MonoBehaviour
+    public class SceneLoaderManager : MonoBehaviour
     {
         [SerializeField] private bool debugMode;
         [SerializeField] private List<string> scenesLoaded = new List<string>();

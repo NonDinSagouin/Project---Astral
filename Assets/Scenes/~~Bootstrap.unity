@@ -166,7 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Core.Bootstrap.Bootstrapper
   sceneLoader: {fileID: 304961810}
   startSceneName:
-  - Persistent
+  - ~Persistent
   - MainMenu
   debugMode: 0
 --- !u!114 &304961810
@@ -185,7 +185,7 @@ MonoBehaviour:
   scenesLoaded: []
   scenesAllowedToLoadMultipleTimes: []
   scenesNotAllowedToUnload:
-  - Persistent
+  - ~Persistent
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
