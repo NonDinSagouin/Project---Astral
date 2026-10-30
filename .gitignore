@@ -112,3 +112,9 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Ajout des dossiers spécifiques à ignorer
+/[Aa]ssets/[Pp]ackages/*
+/[Aa]ssets/[Pp]lugins/*
+/Packages/*
+/[Aa]ssets/[Ss]ound/*
