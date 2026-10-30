@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core.Managers
 {
-    public class AudioManager : MonoBehaviour
+    public class AudioManager : Singleton<AudioManager>
     {
     }
 }

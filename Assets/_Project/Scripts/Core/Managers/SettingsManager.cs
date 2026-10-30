@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core.Managers
 {
-    public class SettingsManager : MonoBehaviour
+    public class SettingsManager : Singleton<SettingsManager>
     {
     }
 }

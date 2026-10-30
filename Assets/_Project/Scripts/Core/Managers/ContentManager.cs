@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core.Managers
 {
-    public class ContentManager : MonoBehaviour
+    public class ContentManager : Singleton<ContentManager>
     {
     }
 }

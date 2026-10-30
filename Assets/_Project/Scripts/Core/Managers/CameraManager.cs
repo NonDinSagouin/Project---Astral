@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Core.Managers
 {
-    public class CameraManager : MonoBehaviour
+    public class CameraManager : Singleton<CameraManager>
     {
     }
 }

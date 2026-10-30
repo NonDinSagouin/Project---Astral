@@ -6,7 +6,7 @@ using Helper;
 
 namespace Core.Managers
 {
-    public class SceneLoaderManager : MonoBehaviour
+    public class SceneLoaderManager : Singleton<SceneLoaderManager>
     {
         [SerializeField] private bool debugMode;
         [SerializeField] private List<string> scenesLoaded = new List<string>();
