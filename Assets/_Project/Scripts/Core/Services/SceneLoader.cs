@@ -4,15 +4,26 @@ using UnityEngine.SceneManagement;
 
 using Helper;
 
-namespace Core.SceneManagement
+namespace Core.Services
 {
-    public class SceneLoader : MonoBehaviour
+    public class ServiceSceneLoader : MonoBehaviour
     {
-        [SerializeField] private bool isLoadingScene;
         [SerializeField] private bool debugMode;
-
+        [SerializeField] private List<string> scenesLoaded = new List<string>();
         [SerializeField] private List<string> scenesAllowedToLoadMultipleTimes = new List<string>();
-        
+        [SerializeField] private List<string> scenesNotAllowedToUnload = new List<string>();
+
+        /// <summary>
+        /// Vérifie si la scène spécifiée est déjà chargée.
+        /// </summary>
+        /// <param name="sceneName">Le nom de la scène à vérifier.</param>
+        /// <returns>Retourne true si la scène est déjà chargée, sinon false.</returns>
+        public bool IsAlreadyLoaded(string sceneName)
+        {
+            if (scenesAllowedToLoadMultipleTimes.Contains(sceneName)) return false;
+            return SceneManager.GetSceneByName(sceneName).isLoaded;
+        }
+
         /// <summary>
         /// Charge la scène spécifiée de manière asynchrone.
         /// </summary>
@@ -22,12 +33,6 @@ namespace Core.SceneManagement
             if (string.IsNullOrWhiteSpace(sceneName))
             {
                 DebugMessage.Log(debugMode, "Cannot load a scene because its name is empty.", this);
-                return false;
-            }
-
-            if (isLoadingScene)
-            {
-                DebugMessage.LogWarning(debugMode, $"Cannot load scene '{sceneName}' while another scene is loading.", this);
                 return false;
             }
 
@@ -51,8 +56,8 @@ namespace Core.SceneManagement
                 return false;
             }
 
-            isLoadingScene = true;
-            operation.completed += _ => isLoadingScene = false;
+            if (!scenesLoaded.Contains(sceneName)) scenesLoaded.Add(sceneName);
+
             return true;
         }
 
@@ -63,6 +68,12 @@ namespace Core.SceneManagement
         /// <returns>Retourne true si le déchargement a été initié avec succès, sinon false.</returns>
         public bool UnloadScene(string sceneName)
         {
+            if (scenesNotAllowedToUnload.Contains(sceneName))
+            {
+                DebugMessage.LogWarning(debugMode, $"Scene '{sceneName}' is not allowed to be unloaded.", this);
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(sceneName))
             {
                 DebugMessage.Log(debugMode, "Cannot unload a scene because its name is empty.", this);
@@ -82,8 +93,8 @@ namespace Core.SceneManagement
                 return false;
             }
 
-            isLoadingScene = true;
-            operation.completed += _ => isLoadingScene = false;
+            if (scenesLoaded.Contains(sceneName)) scenesLoaded.Remove(sceneName);
+
             return true;
         }
     }

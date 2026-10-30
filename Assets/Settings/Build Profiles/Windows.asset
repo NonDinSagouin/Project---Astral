@@ -26,6 +26,9 @@ MonoBehaviour:
     m_path: Assets/Scenes/Bootstrap.unity
     m_guid: 8c9cfa26abfee488c85f1582747f6a02
   - m_enabled: 1
+    m_path: Assets/Scenes/Persistent.unity
+    m_guid: b733496d745252a4c8e38b743f556526
+  - m_enabled: 1
     m_path: Assets/Scenes/MainMenu.unity
     m_guid: 4b9ef4c84580a074db86dd48d2345a5a
   - m_enabled: 1

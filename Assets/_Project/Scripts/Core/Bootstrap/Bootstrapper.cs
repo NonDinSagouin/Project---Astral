@@ -1,44 +1,46 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 using Helper;
-using Core.SceneManagement;
+using Core.Services;
 
 namespace Core.Bootstrap
 {
-    /// <summary>
-    /// Interface définissant un service de bootstrap qui doit être initialisé par le Bootstrapper.
-    /// </summary>
-    public interface IBootstrapService
-    {
-        void Initialize();
-    }
-
     /// <summary>
     /// Classe responsable de l'initialisation des services de bootstrap et du chargement de la scène initiale.
     /// </summary>
     public class Bootstrapper : MonoBehaviour
     {
-        [SerializeField] private SceneLoader sceneLoader;
-        [SerializeField] private string initialSceneName = "MainMenu";
-        [SerializeField] private MonoBehaviour[] services;
+        [SerializeField] private ServiceSceneLoader sceneLoader;
+        [SerializeField] private string[] startSceneName;
 
         [SerializeField] private bool debugMode;
 
+        private readonly HashSet<string> scenesToLoad = new HashSet<string>();
+
         void Awake()
         {
-            DebugMessage.Log(debugMode, "Bootstrapper Awake: Initializing services.", this);
-            InitializeServices();
+            if (sceneLoader == null)
+            {
+                throw new ArgumentException("SceneLoader is not assigned on the Bootstrapper.", nameof(sceneLoader));
+            }
+
+            if (startSceneName == null || startSceneName.Length == 0 || string.IsNullOrWhiteSpace(startSceneName[0]))
+            {
+                throw new ArgumentException("Initial scene name cannot be empty.", nameof(startSceneName));
+            }
         }
 
         void Start()
         {
             DebugMessage.Log(debugMode, "Bootstrapper Start: Loading initial scene.", this);
 
-            if (string.IsNullOrWhiteSpace(initialSceneName))
+            if (startSceneName == null || startSceneName.Length == 0 || string.IsNullOrWhiteSpace(startSceneName[0]))
             {
-                throw new ArgumentException("Initial scene name cannot be empty.", nameof(initialSceneName));
+                throw new ArgumentException("Initial scene name cannot be empty.", nameof(startSceneName));
             }
 
             if (sceneLoader == null)
@@ -46,12 +48,43 @@ namespace Core.Bootstrap
                 throw new ArgumentException("SceneLoader is not assigned on the Bootstrapper.", nameof(sceneLoader));
             }
 
-            DebugMessage.Log(debugMode, $"Loading initial scene: {initialSceneName}", this);
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            scenesToLoad.Clear();
+            List<string> scenesToRequest = new List<string>();
 
-            if (!sceneLoader.LoadScene(initialSceneName, LoadSceneMode.Additive))
+            foreach (string sceneName in startSceneName)
             {
-                throw new InvalidOperationException($"Failed to load initial scene '{initialSceneName}'.");
+                if (string.IsNullOrWhiteSpace(sceneName))
+                {
+                    throw new ArgumentException("Initial scene name cannot be empty.", nameof(startSceneName));
+                }
+
+                if (sceneLoader.IsAlreadyLoaded(sceneName))
+                {
+                    DebugMessage.LogWarning(debugMode, $"Scene '{sceneName}' is already loaded.", this);
+                    continue;
+                }
+
+                if (scenesToLoad.Add(sceneName))
+                {
+                    scenesToRequest.Add(sceneName);
+                }
+            }
+
+            if (scenesToLoad.Count == 0)
+            {
+                UnloadBootstrapScene();
+                return;
+            }
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            foreach (string sceneName in scenesToRequest)
+            {
+                DebugMessage.Log(debugMode, $"Loading initial scene: {sceneName}", this);
+                if (!sceneLoader.LoadScene(sceneName, LoadSceneMode.Additive))
+                {
+                    SceneManager.sceneLoaded -= OnSceneLoaded;
+                    throw new InvalidOperationException($"Failed to load initial scene '{sceneName}'.");
+                }
             }
         }
 
@@ -62,45 +95,31 @@ namespace Core.Bootstrap
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
-            if (scene.name != initialSceneName)
+            if (!scenesToLoad.Remove(scene.name))
             {
-                throw new InvalidOperationException($"Loaded scene '{scene.name}' does not match the initial scene '{initialSceneName}'.");
-            }
-
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            DebugMessage.Log(debugMode, "Initial scene loaded. Destroying Bootstrapper.", this);
-
-            Destroy(this);
-        }
-
-        /// <summary>
-        /// Initialise tous les services de bootstrap référencés dans le tableau des services.
-        /// </summary>
-        private void InitializeServices()
-        {
-            if (services == null)
-            {
-                DebugMessage.LogError(debugMode, "No services assigned to the Bootstrapper.", this);
                 return;
             }
 
-            foreach (MonoBehaviour service in services)
+            if (scenesToLoad.Count > 0)
             {
-                if (service == null)
-                {
-                    DebugMessage.LogError(debugMode, "A service reference is missing on the Bootstrapper.", this);
-                    continue;
-                }
-
-                if (service is not IBootstrapService bootstrapService)
-                {
-                    DebugMessage.LogError(debugMode, $"{service.name} does not implement {nameof(IBootstrapService)}.", service);
-                    continue;
-                }
-
-                DebugMessage.Log(debugMode, $"Initializing service: {service.name}", service);
-                bootstrapService.Initialize();
+                return;
             }
+
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            DebugMessage.Log(debugMode, "All initial scenes loaded. Unloading the Bootstrap scene.", this);
+            UnloadBootstrapScene();
+        }
+
+        private void UnloadBootstrapScene()
+        {
+            string bootstrapSceneName = gameObject.scene.name;
+            if (startSceneName != null && Array.IndexOf(startSceneName, bootstrapSceneName) >= 0)
+            {
+                DebugMessage.LogError(debugMode, "The Bootstrap scene cannot be unloaded because it is listed as a start scene.", this);
+                return;
+            }
+
+            sceneLoader.UnloadScene(bootstrapSceneName);
         }
     }
 }
