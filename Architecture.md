@@ -1,6 +1,6 @@
 ## Architecture du projet Unity
 `Statut` : conventions de référence
-`Périmètre` : architecture générale, nommage, services persistants, singletons et événements
+`Périmètre` : architecture générale, nommage, assemblies, ScriptableObjects, services persistants, singletons et événements
 `Langue du code` : anglais
 
 ## 1. Objectifs
@@ -125,8 +125,53 @@ obligations automatiques.
 
   -----------------------------------------------------------------------
 
-## 5. Règles d'utilisation des singletons
-#### 5.1 Principe
+## 5. Conventions d'utilisation des `ScriptableObject`
+
+Les `ScriptableObject` servent à définir des données réutilisables et
+éditables dans l'Inspector, par exemple les définitions de personnages,
+d'objets ou les configurations de systèmes. Ils ne remplacent ni les
+composants de scène (`MonoBehaviour`), ni les services responsables du
+comportement à l'exécution.
+
+-   Placer les types de données partagées dans le domaine approprié ;
+    les types génériques de données peuvent aller dans `Scripts/Data`,
+    associé à l'assembly `Data`.
+-   Donner à chaque type un nom explicite correspondant à sa
+    responsabilité, et ajouter `[CreateAssetMenu]` avec un chemin de
+    menu regroupé par domaine.
+-   Garder les champs sérialisés privés et les exposer en lecture seule
+    aux systèmes consommateurs lorsque nécessaire.
+-   Utiliser les références sérialisées pour relier les assets aux
+    composants ou à d'autres assets. Éviter les recherches globales
+    implicites qui masquent les dépendances.
+-   Traiter les assets partagés comme des définitions de données :
+    éviter d'y stocker l'état temporaire d'une partie ou de modifier
+    leurs champs à l'exécution, car toutes les références au même asset
+    observent la même instance.
+-   Limiter `OnValidate` à la validation ou à la normalisation des
+    données dans l'éditeur ; ne pas y déclencher de logique de jeu.
+
+Exemple :
+
+``` csharp
+using UnityEngine;
+
+namespace Data
+{
+    [CreateAssetMenu(fileName = "CharacterDefinition", menuName = "Data/Character Definition")]
+    public class CharacterDefinition : ScriptableObject
+    {
+        [SerializeField] private string displayName;
+        [SerializeField] private int maxHealth = 1;
+
+        public string DisplayName => displayName;
+        public int MaxHealth => maxHealth;
+    }
+}
+```
+
+## 6. Règles d'utilisation des singletons
+#### 6.1 Principe
 
 Le singleton est une exception contrôlée, utilisée lorsqu'une instance
 unique et un accès partagé sont réellement nécessaires.
@@ -143,7 +188,7 @@ Les entités pouvant exister en plusieurs exemplaires
 (`PlayerController`, `EnemyController`, `HealthBarView`, etc.) ne sont
 pas des singletons.
 
-#### 5.2 Classe de base commune
+#### 6.2 Classe de base commune
 
 Tout singleton du projet doit hériter de `Core.Singleton<T>` et ne doit
 pas réimplémenter son propre mécanisme d'instance.
@@ -172,5 +217,5 @@ public class SettingsManager : Singleton<SettingsManager>
 }
 ```
 
-## 6. Règles d'utilisation des événements
+## 7. Règles d'utilisation des événements
 à faire
