@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-using Helper;
+using Helper.Debug;
 
 namespace Core.Managers
 {
