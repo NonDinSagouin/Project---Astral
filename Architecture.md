@@ -170,8 +170,39 @@ namespace Data
 }
 ```
 
-## 6. Règles d'utilisation des singletons
-#### 6.1 Principe
+## 6. Conventions d'utilisation des prefabs
+
+Les prefabs sont des modèles réutilisables de `GameObject` et de leurs
+composants. Ils conviennent aux entités et éléments de présentation qui
+doivent être instanciés ou configurés de manière cohérente ; ils ne
+remplacent pas les `ScriptableObject` pour les données partagées.
+
+-   Ranger les prefabs du projet sous `Assets/_Project/Prefabs`, puis
+    les classer par domaine fonctionnel (par exemple `Characters`,
+    `Combat` ou `UI`).
+-   Donner à chaque prefab un nom explicite lié à son rôle. Éviter les
+    noms génériques comme `New Prefab`.
+-   Garder à la racine du prefab le composant ou l'objet qui représente
+    son rôle principal ; organiser les éléments visuels et auxiliaires
+    comme enfants lorsque cela clarifie la hiérarchie.
+-   Préférer des composants cohésifs et réutilisables. Éviter de faire
+    dépendre un prefab de références de scène qui ne sont pas garanties
+    lors de son instanciation.
+-   Assigner les dépendances connues via l'Inspector ou les fournir
+    explicitement à l'initialisation ; éviter les recherches globales
+    implicites.
+-   Instancier et détruire les prefabs depuis le système responsable de
+    leur cycle de vie (par exemple un spawner ou une factory), et non
+    depuis des composants sans responsabilité claire.
+-   Utiliser les variantes ou les prefabs imbriqués lorsqu'ils évitent
+    une duplication réelle ; garder leur hiérarchie simple et vérifier
+    les overrides avant de les appliquer au prefab source.
+-   Placer les réglages réutilisables et indépendants de la hiérarchie
+    des `GameObject` dans des `ScriptableObject`, plutôt que de
+    dupliquer ces valeurs dans plusieurs prefabs.
+
+## 7. Règles d'utilisation des singletons
+#### 7.1 Principe
 
 Le singleton est une exception contrôlée, utilisée lorsqu'une instance
 unique et un accès partagé sont réellement nécessaires.
@@ -188,7 +219,7 @@ Les entités pouvant exister en plusieurs exemplaires
 (`PlayerController`, `EnemyController`, `HealthBarView`, etc.) ne sont
 pas des singletons.
 
-#### 6.2 Classe de base commune
+#### 7.2 Classe de base commune
 
 Tout singleton du projet doit hériter de `Core.Singleton<T>` et ne doit
 pas réimplémenter son propre mécanisme d'instance.
@@ -217,5 +248,5 @@ public class SettingsManager : Singleton<SettingsManager>
 }
 ```
 
-## 7. Règles d'utilisation des événements
+## 8. Règles d'utilisation des événements
 à faire
