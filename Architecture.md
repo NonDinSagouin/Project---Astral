@@ -58,6 +58,26 @@ namespace MyGame.Combat
 }
 ```
 
+#### 2.2 Assemblies
+
+Les fichiers `.asmdef` découpent `Assets/_Project/Scripts` en assemblies Unity. Un script appartient à l'assembly défini dans son dossier ou dans le dossier parent le plus proche qui contient un `.asmdef`.
+
+Assemblies actuellement déclarés :
+
+| Assembly | Dossier | Références de projet déclarées |
+|---|---|---|
+| `Core` | `Scripts/Core` | `Helper` |
+| `Helper` | `Scripts/Helper` | Aucune |
+| `Data` | `Scripts/Data` | Aucune |
+| `Gameplay` | `Scripts/Gameplay` | `Helper` |
+| `Presentation` | `Scripts/Presentation` | `Helper` |
+
+Règles pour les dépendances entre assemblies :
+
+- Ajouter une référence explicite dans le `.asmdef` lorsqu'un assembly utilise des types d'un autre assembly.
+- Garder les dépendances orientées et sans cycle ; ne pas créer de référence circulaire pour contourner une séparation de responsabilités.
+- Placer chaque script dans l'assembly de son domaine fonctionnel, plutôt que de regrouper tous les scripts dans `Core`.
+
 ## 3. Conventions de nommage
 
 Le code technique est écrit en anglais : classes, méthodes, propriétés,
