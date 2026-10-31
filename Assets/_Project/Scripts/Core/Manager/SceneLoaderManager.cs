@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 using Helper.Debug;
 
-namespace Core.Managers
+namespace Core.Manager
 {
     public class SceneLoaderManager : Singleton<SceneLoaderManager>
     {

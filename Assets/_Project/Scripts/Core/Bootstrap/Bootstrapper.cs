@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 using Helper.Debug;
-using Core.Managers;
+using Core.Manager;
 
 namespace Core.Bootstrap
 {

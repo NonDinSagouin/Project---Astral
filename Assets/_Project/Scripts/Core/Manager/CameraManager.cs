@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Core.Managers
+namespace Core.Manager
 {
     public class CameraManager : Singleton<CameraManager>
     {
