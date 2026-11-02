@@ -23,10 +23,10 @@ MonoBehaviour:
   m_OverrideGlobalSceneList: 1
   m_Scenes:
   - m_enabled: 1
-    m_path: Assets/Scenes/Bootstrap.unity
+    m_path: Assets/Scenes/~~Bootstrap.unity
     m_guid: 8c9cfa26abfee488c85f1582747f6a02
   - m_enabled: 1
-    m_path: Assets/Scenes/Persistent.unity
+    m_path: Assets/Scenes/~Persistent.unity
     m_guid: b733496d745252a4c8e38b743f556526
   - m_enabled: 1
     m_path: Assets/Scenes/MainMenu.unity
@@ -34,6 +34,12 @@ MonoBehaviour:
   - m_enabled: 1
     m_path: Assets/Scenes/Battle.unity
     m_guid: bc0e06575dd21634b9b06dfff15e2124
+  - m_enabled: 1
+    m_path: Assets/Scenes/Technical/Technical Baseline Build.unity
+    m_guid: dc5c73da6078dc748993c622e5cebb19
+  - m_enabled: 1
+    m_path: Assets/Scenes/Technical/Technical Build 1.unity
+    m_guid: 8d17d4823efe6594b950ef21234263e7
   m_HasScriptingDefines: 0
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:

@@ -28,7 +28,7 @@ namespace Core.Manager
         /// Charge la scène spécifiée de manière asynchrone.
         /// </summary>
         /// <param name="sceneName">Le nom de la scène à charger.</param>
-        public bool LoadScene(string sceneName, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
+        public bool LoadScene(string sceneName, LoadSceneMode loadSceneMode = LoadSceneMode.Additive)
         {
             if (string.IsNullOrWhiteSpace(sceneName))
             {

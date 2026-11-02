@@ -2,20 +2,42 @@ using System;
 using System.Linq;
 using UnityEngine;
 
+using Core;
+using Core.Event;
+
 namespace Core.Localization
 { 
     /// <summary>
-    /// Fournit un accès statique aux traductions localisées.
+    /// Représente les langues disponibles pour la localisation.
+    /// </summary>
+    public enum Language
+    {
+        En, // English
+        Fr  // French
+    }
+
+    /// <summary>
+    /// Fournit un accès statique aux traductions localisées et à la gestion de la langue actuelle.
     /// </summary>
     public static class StaticLocalization
     {
         /// <summary>
         /// Fournit la langue actuelle utilisée pour la localisation.
         /// </summary>
-        public static string CURRENT_LANGUAGE = "En";
+        public static Language CURRENT_LANGUAGE = Language.En;
         
         private static readonly LocalizationData Translations = Load();
         private const string RESOURCE_PATH = "Localization";
+
+        /// <summary>
+        /// Change la langue actuelle pour la localisation et publie un événement de changement de langue.
+        /// </summary>
+        /// <param name="language">La langue à utiliser pour la localisation.</param>
+        public static void SwitchLanguage(Language language)
+        {
+            CURRENT_LANGUAGE = language;
+            EventBus.Publish(new OnLanguageChangeEvent());
+        }
 
         private static LocalizationData Load()
         {
@@ -56,16 +78,17 @@ namespace Core.Localization
 
         /// <summary>
         /// Essaie de récupérer la traduction pour une clé donnée dans la langue spécifiée.
+        /// Si la langue n'est pas spécifiée, utilise la langue actuelle.
         /// </summary>
         /// <param name="key">La clé de la traduction.</param>
         /// <param name="value">La valeur traduite correspondante si trouvée.</param>
         /// <param name="language">La langue dans laquelle récupérer la traduction. Si null, utilise la langue actuelle.</param>
         /// <returns>True si la traduction est trouvée, sinon false.</returns>
-        public static bool TryGet(string key, out string value, string language = null)
+        public static bool TryGet(string key, out string value, Language? language = null)
         {
             language ??= CURRENT_LANGUAGE;
             var mapping = Translations.table.FirstOrDefault(m => m.key == key);
-            var entry = mapping?.values.FirstOrDefault(v => v.key == language);
+            var entry = mapping?.values.FirstOrDefault(v => v.key == language.ToString());
             value = entry?.value;
             return !string.IsNullOrEmpty(value);
         }
