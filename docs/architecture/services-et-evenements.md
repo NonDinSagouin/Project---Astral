@@ -1,4 +1,4 @@
-# Services et événements
+# ⚙️ Services et événements
 
 [Retour au sommaire de l'architecture](../../Architecture.md)
 

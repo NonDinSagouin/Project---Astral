@@ -14,11 +14,8 @@ lisible, testable et facile à faire évoluer.
 Pour faciliter la consultation et la maintenance, les règles détaillées
 sont réparties par thème :
 
-- [Organisation du projet](docs/architecture/organisation.md) — dossiers,
-  fichiers, classes et assemblies.
-- [Conventions de code](docs/architecture/conventions.md) — langue,
-  nommage et responsabilités des composants.
-- [Conventions des assets Unity](docs/architecture/assets-unity.md) —
-  `ScriptableObject` et prefabs.
-- [Services et événements](docs/architecture/services-et-evenements.md) —
-  singletons et utilisation de l'`EventBus`.
+- [Organisation du projet](docs/architecture/organisation.md) — dossiers, fichiers, classes et assemblies.
+- [Conventions de code](docs/architecture/conventions.md) — langue, nommage et responsabilités des composants.
+- [Conventions des assets Unity](docs/architecture/assets-unity.md) — `ScriptableObject` et prefabs.
+- [🌐 Localisation](docs/architecture/localization.md) — fichiers de traductions, clés et rafraîchissement des textes.
+- [⚙️ Services et événements](docs/architecture/services-et-evenements.md) — singletons et utilisation de l'`EventBus`.
