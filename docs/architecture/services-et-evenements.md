@@ -104,3 +104,20 @@ Exemple de publication, une fois la nouvelle langue appliquée :
 ```csharp
 EventBus.Publish(new OnLanguageChangeEvent());
 ```
+
+## Gestion des informations de la souris
+
+`Core.Manager.MouseManager` est un singleton qui lit la souris via le
+nouveau Input System (`Mouse.current`) à chaque `Update`. S'il n'y a pas
+de souris active, la mise à jour est ignorée.
+
+Le gestionnaire récupère la position de la souris en coordonnées écran,
+puis la convertit avec `Camera.main.ScreenToWorldPoint`. La coordonnée
+`z` du résultat est forcée à `0` pour obtenir une position sur le plan
+XY du monde. Les deux valeurs sont actuellement stockées dans des champs
+sérialisés privés : elles sont consultables dans l'inspecteur, mais ne
+sont pas exposées comme propriétés publiques.
+
+La visibilité du curseur est réglée avec le champ `showCursor` de
+l'inspecteur (`true` pour l'afficher). Lorsque `debugMode` est activé,
+`MouseManager` journalise les positions écran et monde.
