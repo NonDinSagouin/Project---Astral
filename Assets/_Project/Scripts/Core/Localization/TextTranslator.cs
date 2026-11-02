@@ -28,12 +28,17 @@ namespace Core.Localization
 
             EventBus.Subscribe<OnLanguageChangeEvent>(OnLanguageChange);
         }
+
+        void OnDestroy()
+        {
+            EventBus.Unsubscribe<OnLanguageChangeEvent>(OnLanguageChange);
+        }
         
         private void OnLanguageChange(OnLanguageChangeEvent evt)
         {
             if (text == null && TMPText == null)
             {
-                throw new System.Exception("Text component not found.");
+                throw new System.Exception($"Text component not found. {gameObject.name}");
             }
 
             if (!LocalizationManager.Instance.TryGet(key, out string translatedText))
@@ -69,7 +74,7 @@ namespace Core.Localization
         {
             if (text == null && TMPText == null)
             {
-                throw new System.Exception("Text component not found. Ensure that the GameObject has either a Text or TextMeshProUGUI component !");
+                throw new System.Exception($"Text component not found. Ensure that the GameObject has either a Text or TextMeshProUGUI component ! {gameObject.name}");
             }
 
             OnLanguageChange(new OnLanguageChangeEvent());

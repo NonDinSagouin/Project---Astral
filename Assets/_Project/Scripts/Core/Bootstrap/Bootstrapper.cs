@@ -15,11 +15,13 @@ namespace Core.Bootstrap
     public class Bootstrapper : MonoBehaviour
     {
         [SerializeField] private SceneLoaderManager sceneLoader;
+        [Tooltip("Scenes loaded first. The start scenes are loaded once all of them are loaded.")]
+        [SerializeField] private string[] prioritySceneName;
         [SerializeField] private string[] startSceneName;
-
         [SerializeField] private bool debugMode;
 
         private readonly HashSet<string> scenesToLoad = new HashSet<string>();
+        private Action onScenesLoaded;
 
         void Awake()
         {
@@ -36,7 +38,7 @@ namespace Core.Bootstrap
 
         void Start()
         {
-            DebugMessage.Log(debugMode, "Bootstrapper Start: Loading initial scene.", this);
+            DebugMessage.Log(debugMode, "Bootstrapper Start: Loading priority scenes then initial scenes.", this);
 
             if (startSceneName == null || startSceneName.Length == 0 || string.IsNullOrWhiteSpace(startSceneName[0]))
             {
@@ -48,14 +50,27 @@ namespace Core.Bootstrap
                 throw new ArgumentException("SceneLoader is not assigned on the Bootstrapper.", nameof(sceneLoader));
             }
 
+            LoadScenes(prioritySceneName, nameof(prioritySceneName), LoadStartScenes);
+        }
+
+        private void LoadStartScenes()
+        {
+            LoadScenes(startSceneName, nameof(startSceneName), UnloadBootstrapScene);
+        }
+
+        /// <summary>
+        /// Charge un groupe de scènes en parallèle et appelle onCompleted quand toutes sont chargées.
+        /// </summary>
+        private void LoadScenes(string[] sceneNames, string fieldName, Action onCompleted)
+        {
             scenesToLoad.Clear();
             List<string> scenesToRequest = new List<string>();
 
-            foreach (string sceneName in startSceneName)
+            foreach (string sceneName in sceneNames ?? Array.Empty<string>())
             {
                 if (string.IsNullOrWhiteSpace(sceneName))
                 {
-                    throw new ArgumentException("Initial scene name cannot be empty.", nameof(startSceneName));
+                    throw new ArgumentException("Scene name cannot be empty.", fieldName);
                 }
 
                 if (sceneLoader.IsAlreadyLoaded(sceneName))
@@ -72,25 +87,27 @@ namespace Core.Bootstrap
 
             if (scenesToLoad.Count == 0)
             {
-                UnloadBootstrapScene();
+                onCompleted();
                 return;
             }
 
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+            onScenesLoaded = onCompleted;
+            SceneManager.sceneLoaded += OnSceneLoaded;
             foreach (string sceneName in scenesToRequest)
             {
-                DebugMessage.Log(debugMode, $"Loading initial scene: {sceneName}", this);
+                DebugMessage.Log(debugMode, $"Loading scene from {fieldName}: {sceneName}", this);
                 if (!sceneLoader.LoadScene(sceneName, LoadSceneMode.Additive))
                 {
-                    UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
-                    throw new InvalidOperationException($"Failed to load initial scene '{sceneName}'.");
+                    SceneManager.sceneLoaded -= OnSceneLoaded;
+                    onScenesLoaded = null;
+                    throw new InvalidOperationException($"Failed to load scene '{sceneName}' from {fieldName}.");
                 }
             }
         }
 
         void OnDestroy()
         {
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
@@ -105,9 +122,10 @@ namespace Core.Bootstrap
                 return;
             }
 
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
-            DebugMessage.Log(debugMode, "All initial scenes loaded. Unloading the Bootstrap scene.", this);
-            UnloadBootstrapScene();
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            Action onCompleted = onScenesLoaded;
+            onScenesLoaded = null;
+            onCompleted?.Invoke();
         }
 
         private void UnloadBootstrapScene()
