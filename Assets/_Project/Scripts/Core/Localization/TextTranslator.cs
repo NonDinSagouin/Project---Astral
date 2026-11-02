@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 using Core.Event;
+using Core.Manager;
 
 namespace Core.Localization
 {
@@ -35,7 +36,7 @@ namespace Core.Localization
                 throw new System.Exception("Text component not found.");
             }
 
-            if (!StaticLocalization.TryGet(key, out string translatedText))
+            if (!LocalizationManager.Instance.TryGet(key, out string translatedText))
             {
                 throw new System.Exception($"Translation not found for key: {key}");
             }

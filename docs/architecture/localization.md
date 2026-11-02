@@ -3,9 +3,10 @@
 [Retour au sommaire de l'architecture](../../Architecture.md)
 
 Le système de localisation charge les fichiers JSON placés dans
-`Assets/_Project/Resources/Localization`. `StaticLocalization` les
-combine au démarrage et permet de rechercher une traduction par clé et
-par langue.
+`Assets/_Project/Resources/Localization`. `LocalizationManager`, un
+singleton (`Core.Manager`), les combine à son initialisation et permet
+de rechercher une traduction par clé et par langue. Il doit donc être
+présent dans une scène chargée avant l'utilisation des traductions.
 
 ## Fichiers de traduction
 
@@ -16,9 +17,10 @@ par langue.
 - Utiliser des clés descriptives et stables, organisées par domaine avec
   des segments séparés par des points, par exemple
   `menu.button.start`.
-- Déclarer les identifiants de langue de façon cohérente dans
-  `languages` et dans les entrées `values`. Les identifiants sont
-  comparés tels quels : `En` et `en` sont différents.
+- Utiliser dans `languages` et dans les entrées `values` les noms des
+  valeurs de l'enum `Language` (`En`, `Fr`). Les identifiants sont
+  comparés tels quels : `En` et `en` sont différents. Ajouter une langue
+  implique d'ajouter une valeur à l'enum `Language`.
 - Fournir une valeur pour chaque langue prise en charge et chaque clé.
   Garder les clés de traduction uniques entre tous les fichiers chargés.
   Une clé manquante ou une traduction vide n'a pas de valeur de repli.
@@ -49,26 +51,23 @@ texte initial de l'élément à son démarrage et affiche sa traduction.
 Pour une configuration explicite, désactiver cette option et renseigner
 la clé et le composant texte dans l'Inspector.
 
-`StaticLocalization.TryGet(key, out value)` utilise la langue courante
-par défaut. Utiliser son paramètre `language` pour rechercher
+`LocalizationManager.Instance.TryGet(key, out value)` utilise la langue
+courante par défaut. Utiliser son paramètre `language` pour rechercher
 explicitement une autre langue.
 
 ## Changement de langue
 
-`OnLanguageChangeEvent` signale un changement ; l'événement ne modifie
-pas lui-même la langue. Après avoir mis à jour `CURRENT_LANGUAGE`,
-publier l'événement pour que les textes abonnés se rafraîchissent :
+Changer de langue uniquement via `LocalizationManager.SwitchLanguage`.
+La méthode met à jour la langue courante puis publie
+`OnLanguageChangeEvent` pour que les textes abonnés se rafraîchissent.
+Ne pas publier cet événement manuellement pour changer de langue.
 
 ```csharp
-using Core;
-using Core.Event;
-using Core.Localization;
+using Core.Manager;
 
-StaticLocalization.CURRENT_LANGUAGE = "Fr";
-EventBus.Publish(new OnLanguageChangeEvent());
+LocalizationManager.Instance.SwitchLanguage(Language.Fr);
 ```
 
-Utiliser exactement un identifiant présent dans les fichiers de
-traduction. Si une clé ou sa traduction est introuvable, `TryGet`
-retourne `false` ; `TextTranslator` signale cette erreur au lieu
-d'afficher silencieusement une valeur de repli.
+Si une clé ou sa traduction est introuvable, `TryGet` retourne `false` ;
+`TextTranslator` signale cette erreur au lieu d'afficher silencieusement
+une valeur de repli.

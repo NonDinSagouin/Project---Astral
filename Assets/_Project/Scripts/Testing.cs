@@ -25,13 +25,13 @@ namespace Testing
         public void switchToFrench()
         {
             Debug.Log("Switching to French...");
-            StaticLocalization.SwitchLanguage(Language.Fr);
+            LocalizationManager.Instance.SwitchLanguage(Language.Fr);
         }
 
         public void switchToEnglish()
         {
             Debug.Log("Switching to English...");
-            StaticLocalization.SwitchLanguage(Language.En);
+            LocalizationManager.Instance.SwitchLanguage(Language.En);
         }
     }
 }
