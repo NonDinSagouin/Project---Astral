@@ -1,0 +1,33 @@
+{
+    "languages": [ "En", "Fr" ],
+    "table": [
+        {
+            "key": "test.button.load_scene",
+            "values": [
+                { "key": "En", "value": "Load Scene" },
+                { "key": "Fr", "value": "Charger la scène" }
+            ]
+        },
+        {
+            "key": "test.button.unload_scene",
+            "values": [
+                { "key": "En", "value": "Unload Scene" },
+                { "key": "Fr", "value": "Décharger la scène" }
+            ]
+        },
+        {
+            "key": "test.button.switch_FR",
+            "values": [
+                { "key": "En", "value": "Switch to French" },
+                { "key": "Fr", "value": "Passer en français" }
+            ]
+        },
+        {
+            "key": "test.button.switch_EN",
+            "values": [
+                { "key": "En", "value": "Switch to English" },
+                { "key": "Fr", "value": "Passer en anglais" }
+            ]
+        }
+    ]
+}

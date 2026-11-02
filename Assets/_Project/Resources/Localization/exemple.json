@@ -1,0 +1,12 @@
+{
+    "languages": [ "En", "Fr" ],
+    "table": [
+        {
+            "key": "test.title.value",
+            "values": [
+                { "key": "En", "value": "Tests En" },
+                { "key": "Fr", "value": "Tests Fr" }
+            ]
+        }
+    ]
+}
