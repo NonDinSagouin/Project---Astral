@@ -4,6 +4,8 @@ namespace Gameplay.Combat.Grid
 {
     public class CellOccupant : MonoBehaviour
     {
+        [SerializeField] private Movement movement;
+
         private Cell currentCell;
 
         public void SetCurrentCell(Cell cell)
@@ -14,7 +16,7 @@ namespace Gameplay.Combat.Grid
         public void MoveOccupantToCell(Cell cell)
         {
             SetCurrentCell(cell);
-            transform.position = cell.WorldPosition;
+            movement.MoveTo(cell.WorldPosition);
         }
     }
 }

@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 5866705747576331297}
   - component: {fileID: 4525297633289858358}
   - component: {fileID: 4308029069711170691}
+  - component: {fileID: 6656857250132872025}
+  - component: {fileID: 243797111545290001}
   m_Layer: 0
   m_Name: Asteroid
   m_TagString: Untagged
@@ -139,3 +141,28 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &6656857250132872025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5149297705028350175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42eceef06d2c72c49a010ec6ced3667b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::Gameplay.Combat.Grid.CellOccupant
+  movement: {fileID: 243797111545290001}
+--- !u!114 &243797111545290001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5149297705028350175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cff82d15f0d17947aa07975f8e34ec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::Gameplay.Combat.Movement

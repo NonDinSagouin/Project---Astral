@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 using Core;
 using Core.Event;
@@ -10,6 +11,8 @@ namespace Gameplay.Combat
     {
         [SerializeField] private GridManager gridManager;
         [SerializeField] private CellOccupant occupantSelected;
+
+        [SerializeField] private TextMeshProUGUI selectedCellText;
 
         void Start()
         {
@@ -34,7 +37,9 @@ namespace Gameplay.Combat
         private void OnOccupantSelectedChange(OnOccupantSelectedChangeEvent evt)
         {
             if (occupantSelected == gridManager.OccupantSelected) return;
+
             occupantSelected = gridManager.OccupantSelected;
+            selectedCellText.text = occupantSelected != null ? occupantSelected.name : "None";
         }
 
         private void OnHoveredCellChange(OnHoveredCellChangeEvent evt)
