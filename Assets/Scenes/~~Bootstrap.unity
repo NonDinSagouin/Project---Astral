@@ -383,7 +383,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Core::Core.Manager.MouseManager
   debugMode: 0
   showCursor: 1
-  worldMousePosition: {x: 0, y: 0, z: 0}
 --- !u!4 &1527560788
 Transform:
   m_ObjectHideFlags: 0

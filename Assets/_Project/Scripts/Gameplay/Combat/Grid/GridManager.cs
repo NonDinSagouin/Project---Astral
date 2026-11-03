@@ -1,7 +1,8 @@
 using UnityEngine;
 
+using Core;
 using Core.Manager;
-using Helper.Debug;
+using Core.Event;
 
 namespace Gameplay.Combat.Grid
 {
@@ -20,6 +21,11 @@ namespace Gameplay.Combat.Grid
 
         private Cell hoveredCell;
         private Cell selectedCell;
+        private CellOccupant occupantSelected;
+
+        public Cell SelectedCell => selectedCell;
+        public Cell HoveredCell => hoveredCell;
+        public CellOccupant OccupantSelected => occupantSelected;
 
         void OnValidate()
         {
@@ -28,12 +34,18 @@ namespace Gameplay.Combat.Grid
         
         void Awake()
         {
-            mouseManager = MouseManager.Instance;
             SetUpGrid();
+        }
+
+        void Start()
+        {
+            mouseManager = MouseManager.Instance;
         }
 
         void Update()
         {
+            if (mouseManager == null) return;
+
             // Gestion du survol des cellules.
             HoverHandler();
 
@@ -42,8 +54,6 @@ namespace Gameplay.Combat.Grid
 
             // Met à jour les paramètres de toutes les cellules.
             UpdateCellsParameters();
-
-            Debug.Log($"Hovered Cell: {hoveredCell?.Coordinates}, Selected Cell: {selectedCell?.Coordinates}, isOccupied: {hoveredCell?.IsOccupied}, Occupant: {hoveredCell?.Occupant}");
         }
 
         /// <summary>
@@ -87,7 +97,9 @@ namespace Gameplay.Combat.Grid
                 return;
             }
 
+            var oldCell = hoveredCell;
             hoveredCell = cell;
+            EventBus.Publish(new OnHoveredCellChangeEvent(oldCell, hoveredCell));
         }
 
         /// <summary>
@@ -95,10 +107,19 @@ namespace Gameplay.Combat.Grid
         /// </summary>
         private void SelectHandler()
         {
-            if (!mouseManager.IsLeftMousePressed) return;
-        
-            if (hoveredCell != null) selectedCell = hoveredCell;
-            else selectedCell = null;
+            if (!mouseManager.WasLeftMousePressedThisFrame) return;
+
+            var oldCell = selectedCell;
+            var oldOccupant = occupantSelected;
+
+            selectedCell = hoveredCell;
+            occupantSelected = hoveredCell != null ? hoveredCell.Occupant : null;
+
+            if (oldCell != selectedCell)
+                EventBus.Publish(new OnSelectedCellChangeEvent(oldCell, selectedCell));
+
+            if (oldOccupant != occupantSelected)
+                EventBus.Publish(new OnOccupantSelectedChangeEvent(oldOccupant, occupantSelected));
         }
 
         /// <summary>
@@ -108,24 +129,38 @@ namespace Gameplay.Combat.Grid
         {
             foreach (var cell in grid)
             {
-                // Vérifie s'il y a un occupant de cellule à la position de la cellule.
-                Collider2D CellCollider = Physics2D.OverlapBox(cell.WorldPosition, Vector2.one * collisionCheckSize, 0f);
-
-                if (CellCollider != null)
-                {
-                    CellOccupant occupant = CellCollider.GetComponent<CellOccupant>();
-                    cell.SetOccupant(occupant);
-                }
-                else
-                {
-                    cell.SetOccupant(null);
-                }
+                SetCellOccupant(cell);
 
                 // Met à jour l'état de survol et de sélection de la cellule.
                 cell.SetHovered(cell == hoveredCell);
 
                 // Met à jour l'état de sélection de la cellule.
                 cell.SetSelected(cell == selectedCell);
+            }
+        }
+
+        /// <summary>
+        /// Définit l'occupant de la cellule en fonction de la présence d'un collider à sa position.
+        /// </summary>
+        /// <param name="cell">La cellule dont l'occupant doit être défini.</param>
+        private void SetCellOccupant(Cell cell)
+        {
+            // Vérifie s'il y a un occupant de cellule à la position de la cellule.
+            Collider2D CellCollider = Physics2D.OverlapBox(cell.WorldPosition, Vector2.one * collisionCheckSize, 0f);
+
+            if (CellCollider != null)
+            {
+                CellOccupant occupant = CellCollider.GetComponent<CellOccupant>();
+
+                if (occupant == null) return;
+                if (occupant == cell.Occupant) return;
+
+                cell.SetOccupant(occupant);
+                occupant.SetCurrentCell(cell);
+            }
+            else
+            {
+                cell.SetOccupant(null);
             }
         }
 

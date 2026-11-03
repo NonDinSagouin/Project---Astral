@@ -56,5 +56,10 @@ namespace Gameplay.Combat.Grid
             this.occupant = occupant;
             isOccupied = occupant != null;
         }
+
+        public override string ToString()
+        {
+            return $"Cell({coordinates.x}, {coordinates.y}, Occupant: {occupant})";
+        }
     }
 }
