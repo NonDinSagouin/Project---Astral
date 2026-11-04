@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6656857250132872025, guid: 344dacb918fe3574eb9ab44689b4de81, type: 3}
+      propertyPath: isObstacle
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -410,27 +414,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1671104607 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 575917178379824733, guid: 491cccfe07dd28645a7abdba74200656, type: 3}
-  m_PrefabInstance: {fileID: 2362724070587474963}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1671104611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1671104607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cff82d15f0d17947aa07975f8e34ec8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Gameplay::Gameplay.Combat.Movement
-  duration: 0.8
-  maxSpeed: 1
-  accelerationEase: 3
-  decelerationEase: 2
 --- !u!1 &1955081837
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,18 +626,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4062866998005512569, guid: 491cccfe07dd28645a7abdba74200656, type: 3}
-      propertyPath: movement
-      value: 
-      objectReference: {fileID: 1671104611}
-    m_RemovedComponents:
-    - {fileID: 198155425783016571, guid: 491cccfe07dd28645a7abdba74200656, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 575917178379824733, guid: 491cccfe07dd28645a7abdba74200656, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1671104611}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 491cccfe07dd28645a7abdba74200656, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

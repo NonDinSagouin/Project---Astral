@@ -30,8 +30,10 @@ namespace Gameplay.Combat
 
         private void OnSelectedCellChange(OnSelectedCellChangeEvent evt)
         {
-            if (occupantSelected == null) return;
-            occupantSelected.MoveOccupantToCell((Cell)evt.NewCell);
+            gridManager.Pathfinder.ClearPreviewPath();
+            Cell destination = evt.NewCell as Cell;
+            if (occupantSelected == null || destination == null) return;
+            occupantSelected.MoveOccupantToCell(destination, gridManager.Pathfinder);
         }
 
         private void OnOccupantSelectedChange(OnOccupantSelectedChangeEvent evt)
@@ -39,12 +41,34 @@ namespace Gameplay.Combat
             if (occupantSelected == gridManager.OccupantSelected) return;
 
             occupantSelected = gridManager.OccupantSelected;
+            gridManager.Pathfinder.ClearPreviewPath();
             selectedCellText.text = occupantSelected != null ? occupantSelected.name : "None";
         }
 
         private void OnHoveredCellChange(OnHoveredCellChangeEvent evt)
-        {   
-            
+        {
+            if (occupantSelected == null || occupantSelected.CurrentCell == null)
+            {
+                gridManager.Pathfinder.ClearPreviewPath();
+                return;
+            }
+
+            Cell destination = evt.NewCell as Cell;
+            if (destination == null)
+            {
+                gridManager.Pathfinder.ClearPreviewPath();
+                return;
+            }
+
+            var path = gridManager.Pathfinder.FindPath(occupantSelected.CurrentCell, destination);
+            if (path == null)
+            {
+                gridManager.Pathfinder.ClearPreviewPath();
+                return;
+            }
+
+            path.Insert(0, occupantSelected.CurrentCell);
+            gridManager.Pathfinder.SetPreviewPath(path);
         }
     }
 }

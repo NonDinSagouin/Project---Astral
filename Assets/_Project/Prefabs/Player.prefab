@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8447898257619803271}
   - component: {fileID: 7151530783857978613}
-  - component: {fileID: 198155425783016571}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -93,22 +92,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
---- !u!114 &198155425783016571
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 371568455961920019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cff82d15f0d17947aa07975f8e34ec8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Gameplay::Gameplay.Combat.Movement
-  duration: 0.8
-  maxSpeed: 1
-  accelerationEase: 3
-  decelerationEase: 2
 --- !u!1 &575917178379824733
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +103,7 @@ GameObject:
   - component: {fileID: 2724013487157152323}
   - component: {fileID: 6120895817579675462}
   - component: {fileID: 4062866998005512569}
+  - component: {fileID: 1620664864053682775}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -201,4 +185,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42eceef06d2c72c49a010ec6ced3667b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gameplay::Gameplay.Combat.Grid.CellOccupant
-  movement: {fileID: 0}
+  movement: {fileID: 1620664864053682775}
+  isObstacle: 1
+--- !u!114 &1620664864053682775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575917178379824733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cff82d15f0d17947aa07975f8e34ec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gameplay::Gameplay.Combat.Movement
+  duration: 0.8

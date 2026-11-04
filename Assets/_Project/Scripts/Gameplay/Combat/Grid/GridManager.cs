@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using Core;
 using Core.Manager;
 using Core.Event;
@@ -18,6 +17,7 @@ namespace Gameplay.Combat.Grid
 
         private MouseManager mouseManager;
         private Cell[,] grid;
+        private GridPathfinder pathfinder;
 
         private Cell hoveredCell;
         private Cell selectedCell;
@@ -26,6 +26,7 @@ namespace Gameplay.Combat.Grid
         public Cell SelectedCell => selectedCell;
         public Cell HoveredCell => hoveredCell;
         public CellOccupant OccupantSelected => occupantSelected;
+        public GridPathfinder Pathfinder => pathfinder;
 
         void OnValidate()
         {
@@ -132,10 +133,10 @@ namespace Gameplay.Combat.Grid
                 SetCellOccupant(cell);
 
                 // Met à jour l'état de survol et de sélection de la cellule.
-                cell.SetHovered(cell == hoveredCell);
+                cell.SetIsHovered(cell == hoveredCell);
 
                 // Met à jour l'état de sélection de la cellule.
-                cell.SetSelected(cell == selectedCell);
+                cell.SetIsSelected(cell == selectedCell);
             }
         }
 
@@ -156,11 +157,13 @@ namespace Gameplay.Combat.Grid
                 if (occupant == cell.Occupant) return;
 
                 cell.SetOccupant(occupant);
+                cell.SetIsObstacle(occupant.IsObstacle);
                 occupant.SetCurrentCell(cell);
             }
             else
             {
                 cell.SetOccupant(null);
+                cell.SetIsObstacle(false);
             }
         }
 
@@ -184,6 +187,8 @@ namespace Gameplay.Combat.Grid
                     grid[x, y] = cell;
                 }
             }
+
+            pathfinder = new GridPathfinder(grid);
         }
 
         /// <summary>
@@ -208,6 +213,8 @@ namespace Gameplay.Combat.Grid
             Matrix4x4 previousMatrix = Gizmos.matrix;
             Gizmos.matrix = transform.localToWorldMatrix;
             
+            /// Dessine la grille et les cellules avec leurs états.
+            /// Les couleurs représentent les différents états des cellules.
             foreach (var cell in grid)
             {
                 Gizmos.color = Color.white;
@@ -218,8 +225,25 @@ namespace Gameplay.Combat.Grid
                 if (cell.IsHovered) Gizmos.color = Color.yellow;
                 if (cell.IsSelected) Gizmos.color = Color.green;
                 if (cell.IsOccupied) Gizmos.color = Color.red;
+                if (cell.IsObstacle) Gizmos.color = Color.black;
                 
                 Gizmos.DrawSphere(cell.WorldPosition, occupiedPointRadius);
+            }
+
+            /// Dessine le chemin prévisualisé si disponible.
+            /// Les lignes cyan représentent le chemin prévisualisé.
+            if (pathfinder != null && pathfinder.PreviewPath != null)
+            {
+                Gizmos.color = Color.cyan;
+                for (int i = 1; i < pathfinder.PreviewPath.Count; i++)
+                {
+                    Vector3 start = pathfinder.PreviewPath[i - 1].WorldPosition;
+                    Vector3 end = pathfinder.PreviewPath[i].WorldPosition;
+                    start.z -= 0.01f;
+                    end.z -= 0.01f;
+                    Gizmos.DrawLine(start, end);
+                    Gizmos.DrawSphere(end, occupiedPointRadius * 0.5f);
+                }
             }
 
             Gizmos.matrix = previousMatrix;
