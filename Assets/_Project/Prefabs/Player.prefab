@@ -199,4 +199,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cff82d15f0d17947aa07975f8e34ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gameplay::Gameplay.Combat.Movement
-  duration: 0.8
+  maxSpeed: 7

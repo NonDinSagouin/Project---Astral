@@ -5,7 +5,8 @@ namespace Gameplay.Combat
 {
     public class Movement : MonoBehaviour
     {
-        [SerializeField, Min(0.01f)] private float duration = 0.3f;
+        [SerializeField, Min(0.01f)] private float maxSpeed = 1.25f;
+        [SerializeField] private int maxMovement;
 
         void OnDestroy()
         {
@@ -13,7 +14,7 @@ namespace Gameplay.Combat
         }
 
         /// <summary>
-        /// Déplace l'objet le long d'un chemin défini par une liste de positions.
+        /// Déplace l'objet le long d'un chemin défini par une lis  te de positions.
         /// </summary>
         /// <param name="positions">La liste des positions formant le chemin.</param>
         public void MoveToPath(IReadOnlyList<Vector3> positions)
@@ -22,21 +23,13 @@ namespace Gameplay.Combat
             if (positions == null || positions.Count == 0)
                 return;
 
-            float totalDistance = 0f;
-            Vector3 previousPosition = transform.position;
-            for (int i = 0; i < positions.Count; i++)
-            {
-                totalDistance += Vector3.Distance(previousPosition, positions[i]);
-                previousPosition = positions[i];
-            }
-
-            if (totalDistance < Mathf.Epsilon)
+            if (maxSpeed < Mathf.Epsilon)
                 return;
 
-            MoveToPathSegment(positions, 0, totalDistance);
+            MoveToPathSegment(positions, 0);
         }
 
-        private void MoveToPathSegment(IReadOnlyList<Vector3> positions, int index, float totalDistance)
+        private void MoveToPathSegment(IReadOnlyList<Vector3> positions, int index)
         {
             if (index >= positions.Count)
                 return;
@@ -45,13 +38,13 @@ namespace Gameplay.Combat
             float segmentDistance = Vector3.Distance(transform.position, target);
             if (segmentDistance < Mathf.Epsilon)
             {
-                MoveToPathSegment(positions, index + 1, totalDistance);
+                MoveToPathSegment(positions, index + 1);
                 return;
             }
 
-            float segmentDuration = duration * segmentDistance / totalDistance;
+            float segmentDuration = segmentDistance / maxSpeed;
             LeanTween.move(gameObject, target, segmentDuration)
-                .setOnComplete(() => MoveToPathSegment(positions, index + 1, totalDistance));
+                .setOnComplete(() => MoveToPathSegment(positions, index + 1));
         }
         
     }
