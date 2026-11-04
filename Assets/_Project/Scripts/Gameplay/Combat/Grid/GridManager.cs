@@ -33,11 +33,13 @@ namespace Gameplay.Combat.Grid
         void OnValidate()
         {
             SetUpGrid();
+            pathfinder = new GridPathfinder(grid);
         }
         
         void Awake()
         {
             SetUpGrid();
+            pathfinder = new GridPathfinder(grid);
         }
 
         void Start()
@@ -60,25 +62,25 @@ namespace Gameplay.Combat.Grid
         }
 
         /// <summary>
-        /// Récupère la cellule aux coordonnées spécifiées.
+        /// Initialise la grille de cellules.
         /// </summary>
-        /// <param name="coordinates">Les coordonnées de la cellule à récupérer.</param>
-        /// <returns>La cellule aux coordonnées spécifiées.</returns>
-        public Cell GetCell(Vector2Int coordinates)
+        private void SetUpGrid()
         {
-            if (coordinates.x < 0 || coordinates.x >= gridWidth || coordinates.y < 0 || coordinates.y >= gridHeight)
+            grid = new Cell[gridWidth, gridHeight];
+
+            for (int x = 0; x < gridWidth; x++)
             {
-                throw new System.Exception("Coordinates out of grid bounds ! " + coordinates.x + ", " + coordinates.y);
+                for (int y = 0; y < gridHeight; y++)
+                {
+                    Vector3 cellPosition = new Vector3(
+                        (x - (gridWidth - 1) * 0.5f) * cellSize,
+                        (y - (gridHeight - 1) * 0.5f) * cellSize,
+                        0);
+
+                    Cell cell = new Cell(new Vector2Int(x, y), cellPosition);
+                    grid[x, y] = cell;
+                }
             }
-
-            if (grid[coordinates.x, coordinates.y] == null)
-            {
-                throw new System.Exception("Cell at coordinates is not initialized ! " + coordinates.x + ", " + coordinates.y);
-            }
-
-            Cell cell = grid[coordinates.x, coordinates.y];
-
-            return cell;
         }
 
         /// <summary>
@@ -92,6 +94,7 @@ namespace Gameplay.Combat.Grid
             if (cell == null)
             {
                 hoveredCell = null;
+                EventBus.Publish(new OnHoveredCellChangeEvent(hoveredCell, null));
                 return;
             }
 
@@ -102,6 +105,8 @@ namespace Gameplay.Combat.Grid
 
             var oldCell = hoveredCell;
             hoveredCell = cell;
+
+            // Publie un événement indiquant que la cellule survolée a changé.
             EventBus.Publish(new OnHoveredCellChangeEvent(oldCell, hoveredCell));
         }
 
@@ -118,9 +123,11 @@ namespace Gameplay.Combat.Grid
             selectedCell = hoveredCell;
             occupantSelected = hoveredCell != null ? hoveredCell.Occupant : null;
 
+            // Publie un événement indiquant que la cellule sélectionnée a changé.
             if (oldCell != selectedCell)
                 EventBus.Publish(new OnSelectedCellChangeEvent(oldCell, selectedCell));
 
+            // Publie un événement indiquant que l'occupant sélectionné a changé.
             if (oldOccupant != occupantSelected)
                 EventBus.Publish(new OnOccupantSelectedChangeEvent(oldOccupant, occupantSelected));
         }
@@ -167,30 +174,6 @@ namespace Gameplay.Combat.Grid
                 cell.SetOccupant(null);
                 cell.SetIsObstacle(false);
             }
-        }
-
-        /// <summary>
-        /// Initialise la grille de cellules.
-        /// </summary>
-        private void SetUpGrid()
-        {
-            grid = new Cell[gridWidth, gridHeight];
-
-            for (int x = 0; x < gridWidth; x++)
-            {
-                for (int y = 0; y < gridHeight; y++)
-                {
-                    Vector3 cellPosition = new Vector3(
-                        (x - (gridWidth - 1) * 0.5f) * cellSize,
-                        (y - (gridHeight - 1) * 0.5f) * cellSize,
-                        0);
-
-                    Cell cell = new Cell(new Vector2Int(x, y), cellPosition);
-                    grid[x, y] = cell;
-                }
-            }
-
-            pathfinder = new GridPathfinder(grid);
         }
 
         /// <summary>

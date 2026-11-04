@@ -61,8 +61,7 @@ namespace Gameplay.Combat.Grid
                     && grid[coordinates.x, coordinates.y] == cell;
             }
 
-            if (start == null || destination == null)
-                return null;
+            if (start == null || destination == null) return null;
 
             int width = grid.GetLength(0);
             int height = grid.GetLength(1);
