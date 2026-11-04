@@ -7,6 +7,7 @@ namespace Gameplay.Combat.Grid
 {
     public class GridManager : MonoBehaviour
     {
+        // ----- Private Properties -------------------------
         [SerializeField] private bool debugMode;
         [SerializeField, Min(1)] private int gridWidth = 1;
         [SerializeField, Min(1)] private int gridHeight = 1;
@@ -23,6 +24,7 @@ namespace Gameplay.Combat.Grid
         private Cell selectedCell;
         private CellOccupant occupantSelected;
 
+        // ----- Public Properties -------------------------
         public Cell SelectedCell => selectedCell;
         public Cell HoveredCell => hoveredCell;
         public CellOccupant OccupantSelected => occupantSelected;

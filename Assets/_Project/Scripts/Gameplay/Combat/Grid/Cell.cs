@@ -4,6 +4,7 @@ namespace Gameplay.Combat.Grid
 {
     public class Cell
     {
+        // ----- Private Properties -------------------------
         private bool isHovered;
         private bool isSelected;
         private bool isOccupied;
@@ -14,22 +15,21 @@ namespace Gameplay.Combat.Grid
         private Vector2Int coordinates;
         private Vector3 worldPosition;
 
+        // ----- Public Properties -------------------------
         public Vector2Int Coordinates => coordinates;
         public Vector3 WorldPosition => worldPosition;
+
         public bool IsHovered => isHovered;
         public bool IsSelected => isSelected;
         public bool IsOccupied => isOccupied;
         public bool IsObstacle => isObstacle;
+
         public CellOccupant Occupant => occupant;
 
         public Cell(Vector2Int coordinates, Vector3 worldPosition)
         {
             this.coordinates = coordinates;
             this.worldPosition = worldPosition;
-            isHovered = false;
-            isSelected = false;
-            isOccupied = false;
-            isObstacle = false;
         }
 
         /// <summary>
@@ -51,6 +51,15 @@ namespace Gameplay.Combat.Grid
         }
 
         /// <summary>
+        /// Définit l'état d'obstacle de la cellule.
+        /// </summary>
+        /// <param name="obstacle">Indique si la cellule est un obstacle.</param>
+        public void SetIsObstacle(bool obstacle)
+        {
+            isObstacle = obstacle;
+        }
+
+        /// <summary>
         /// Définit l'occupant de la cellule.
         /// </summary>
         /// <param name="occupant">L'occupant de la cellule.</param>
@@ -61,17 +70,12 @@ namespace Gameplay.Combat.Grid
         }
 
         /// <summary>
-        /// Définit l'état d'obstacle de la cellule.
+        /// Retourne une représentation sous forme de chaîne de la cellule.
         /// </summary>
-        /// <param name="obstacle">Indique si la cellule est un obstacle.</param>
-        public void SetIsObstacle(bool obstacle)
-        {
-            isObstacle = obstacle;
-        }
-
+        /// <returns>Une chaîne représentant la cellule.</returns>
         public override string ToString()
         {
-            return $"Cell({coordinates.x}, {coordinates.y}, Occupant: {occupant})";
+            return $"Cell({coordinates.x}, {coordinates.y}, Occupant: {occupant}, IsHovered: {isHovered}, IsSelected: {isSelected}, IsOccupied: {isOccupied}, IsObstacle: {isObstacle})";
         }
     }
 }

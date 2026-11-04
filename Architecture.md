@@ -4,6 +4,7 @@
 - **Périmètre :** organisation du projet, conventions de code et règles
   d'utilisation des fonctionnalités Unity
 - **Langue du code :** anglais
+- **Langue des commentaires :** Français
 
 ## Objectifs
 

@@ -5,8 +5,11 @@ namespace Gameplay.Combat.Grid
 {
     public class GridPathfinder
     {
+        // ----- Private Properties -------------------------
         private readonly Cell[,] grid;
         private List<Cell> previewPath;
+
+        // ----- Public Properties -------------------------
 
         /// <summary>
         /// Obtient le chemin prévisualisé actuel, s'il existe.
@@ -19,6 +22,8 @@ namespace Gameplay.Combat.Grid
         /// <param name="grid">La grille de cellules à utiliser pour le pathfinding.</param>
         public GridPathfinder(Cell[,] grid)
         {
+            if (grid == null) throw new System.ArgumentNullException(nameof(grid));
+            
             this.grid = grid;
         }
 
@@ -47,6 +52,15 @@ namespace Gameplay.Combat.Grid
         /// <returns>La liste des cellules formant le chemin le plus court, ou null si aucun chemin n'est possible.</returns>
         public List<Cell> FindPath(Cell start, Cell destination)
         {
+            bool IsCellInGrid(Cell cell, Vector2Int coordinates, int width, int height)
+            {
+                return coordinates.x >= 0
+                    && coordinates.x < width
+                    && coordinates.y >= 0
+                    && coordinates.y < height
+                    && grid[coordinates.x, coordinates.y] == cell;
+            }
+
             if (start == null || destination == null)
                 return null;
 
@@ -62,7 +76,9 @@ namespace Gameplay.Combat.Grid
             if (destination.IsObstacle && start != destination)
                 return null;
 
+            // Une recherche en largeur garantit le chemin le plus court quand chaque déplacement a le même coût.
             bool[,] visited = new bool[width, height];
+            // Mémorise la case précédente pour reconstruire le chemin une fois la destination atteinte.
             Vector2Int[,] previous = new Vector2Int[width, height];
             Queue<Vector2Int> cellsToVisit = new Queue<Vector2Int>();
             Vector2Int[] directions =
@@ -96,9 +112,11 @@ namespace Gameplay.Combat.Grid
                 }
             }
 
+            // Une destination jamais visitée est inaccessible depuis le départ.
             if (!visited[destinationCoordinates.x, destinationCoordinates.y])
                 return null;
 
+            // Remonte les prédécesseurs jusqu'au départ, puis inverse l'ordre pour obtenir le chemin.
             List<Cell> path = new List<Cell>();
             Vector2Int pathCoordinates = destinationCoordinates;
             while (pathCoordinates != startCoordinates)
@@ -110,14 +128,5 @@ namespace Gameplay.Combat.Grid
             path.Reverse();
             return path;
         }
-
-        private bool IsCellInGrid(Cell cell, Vector2Int coordinates, int width, int height)
-        {
-            return coordinates.x >= 0
-                && coordinates.x < width
-                && coordinates.y >= 0
-                && coordinates.y < height
-                && grid[coordinates.x, coordinates.y] == cell;
-        }    
     }
 }
