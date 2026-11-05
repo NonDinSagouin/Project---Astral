@@ -42,7 +42,7 @@ namespace Gameplay.Combat.Grid
             }
 
             // Calcul du chemin vers la cellule cible.
-            List<Cell> path = pathfinder.FindPath(currentCell, cell);
+            List<Cell> path = pathfinder.FindPath(currentCell, cell, MaxMovement);
             if (path == null) return;
 
             // Conversion du chemin en positions dans le monde.

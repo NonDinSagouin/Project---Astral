@@ -90,7 +90,7 @@ namespace Gameplay.Combat
             }
 
             // Cherche le chemin entre la cellule actuelle de l'occupant et la cellule de destination.
-            var path = gridManager.Pathfinder.FindPath(occupantSelected.CurrentCell, destination);
+            var path = gridManager.Pathfinder.FindPath(occupantSelected.CurrentCell, destination, occupantSelected.MaxMovement);
             if (path == null)
             {
                 gridManager.Pathfinder.ClearPreviewPath();

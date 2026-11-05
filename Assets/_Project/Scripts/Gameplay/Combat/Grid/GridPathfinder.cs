@@ -49,8 +49,9 @@ namespace Gameplay.Combat.Grid
         /// </summary>
         /// <param name="start">La cellule de départ.</param>
         /// <param name="destination">La cellule de destination.</param>
-        /// <returns>La liste des cellules formant le chemin le plus court, ou null si aucun chemin n'est possible.</returns>
-        public List<Cell> FindPath(Cell start, Cell destination)
+        /// <param name="maxMovement">Nombre maximal de cases du chemin. Une valeur négative signifie aucune limite.</param>
+        /// <returns>La liste des cellules formant le chemin le plus court, ou null si aucun chemin n'est possible dans la limite de mouvement.</returns>
+        public List<Cell> FindPath(Cell start, Cell destination, int maxMovement = -1)
         {
             bool IsCellInGrid(Cell cell, Vector2Int coordinates, int width, int height)
             {
@@ -79,6 +80,8 @@ namespace Gameplay.Combat.Grid
             bool[,] visited = new bool[width, height];
             // Mémorise la case précédente pour reconstruire le chemin une fois la destination atteinte.
             Vector2Int[,] previous = new Vector2Int[width, height];
+            // Nombre de pas depuis le départ, pour respecter la limite de mouvement.
+            int[,] distance = new int[width, height];
             Queue<Vector2Int> cellsToVisit = new Queue<Vector2Int>();
             Vector2Int[] directions =
             {
@@ -97,6 +100,10 @@ namespace Gameplay.Combat.Grid
                 if (current == destinationCoordinates)
                     break;
 
+                // Ne pas étendre au-delà de la limite de mouvement.
+                if (maxMovement >= 0 && distance[current.x, current.y] >= maxMovement)
+                    continue;
+
                 foreach (Vector2Int direction in directions)
                 {
                     Vector2Int next = current + direction;
@@ -111,6 +118,7 @@ namespace Gameplay.Combat.Grid
 
                     visited[next.x, next.y] = true;
                     previous[next.x, next.y] = current;
+                    distance[next.x, next.y] = distance[current.x, current.y] + 1;
                     cellsToVisit.Enqueue(next);
                 }
             }
