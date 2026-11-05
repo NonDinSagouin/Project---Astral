@@ -861,6 +861,8 @@ MonoBehaviour:
   cellSize: 1
   collisionCheckSize: 0.1
   occupiedPointRadius: 0.1
+  reachablePointRadius: 0.8
+  reachableCellColor: {r: 0, g: 0.617051, b: 1, a: 0.20784314}
 --- !u!4 &1385946080
 Transform:
   m_ObjectHideFlags: 0

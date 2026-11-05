@@ -55,9 +55,16 @@ namespace Gameplay.Combat
             // Vérifie si l'occupant sélectionné a réellement changé avant de mettre à jour.
             if (occupantSelected == newOccupant) return;
 
+            // Efface les cellules atteignables précédemment calculées.
+            gridManager.Reachability.ClearReachableCells();
             // Met à jour l'occupant sélectionné et nettoie le chemin de prévisualisation.
             gridManager.Pathfinder.ClearPreviewPath();
             occupantSelected = newOccupant;
+
+            // Calcule les cellules atteignables à partir de la cellule du nouvel occupant avec une portée de 4.
+            if (occupantSelected != null && occupantSelected.CurrentCell != null)
+                gridManager.Reachability.Compute(occupantSelected.CurrentCell, occupantSelected.MaxMovement);
+
             selectedCellText.text = occupantSelected != null ? occupantSelected.name : "None";
         }
 

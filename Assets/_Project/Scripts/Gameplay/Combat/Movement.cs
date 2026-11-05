@@ -6,7 +6,9 @@ namespace Gameplay.Combat
     public class Movement : MonoBehaviour
     {
         [SerializeField, Min(0.01f)] private float maxSpeed = 1.25f;
-        [SerializeField] private int maxMovement;
+        [SerializeField] private int maxMovement = 2;
+
+        public int MaxMovement => maxMovement;
 
         void OnDestroy()
         {

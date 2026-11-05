@@ -9,6 +9,7 @@ namespace Gameplay.Combat.Grid
         private bool isSelected;
         private bool isOccupied;
         private bool isObstacle;
+        private bool isReachable;
         
         private CellOccupant occupant;
 
@@ -23,6 +24,7 @@ namespace Gameplay.Combat.Grid
         public bool IsSelected => isSelected;
         public bool IsOccupied => isOccupied;
         public bool IsObstacle => isObstacle;
+        public bool IsReachable => isReachable;
 
         public CellOccupant Occupant => occupant;
 
@@ -48,6 +50,15 @@ namespace Gameplay.Combat.Grid
         public void SetIsSelected(bool selected)
         {
             isSelected = selected;
+        }
+
+        /// <summary>
+        /// Définit l'état de la cellule comme atteignable.
+        /// </summary>
+        /// <param name="reachable">Indique si la cellule est atteignable.</param>
+        public void SetIsReachable(bool reachable)
+        {
+            isReachable = reachable;
         }
 
         /// <summary>

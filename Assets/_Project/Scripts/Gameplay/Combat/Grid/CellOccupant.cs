@@ -15,6 +15,8 @@ namespace Gameplay.Combat.Grid
         public bool IsObstacle => isObstacle;
         public Cell CurrentCell => currentCell;
 
+        public int MaxMovement => movement != null ? movement.MaxMovement : 0;
+
         /// <summary>
         /// Définit la cellule actuelle de l'occupant.
         /// </summary>

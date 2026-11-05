@@ -15,10 +15,13 @@ namespace Gameplay.Combat.Grid
 
         [SerializeField, Min(0.01f)] private float collisionCheckSize = 0.1f;
         [SerializeField] private float occupiedPointRadius = 0.1f;
+        [SerializeField] private float reachablePointRadius = 0.1f;
+        [SerializeField] private Color reachableCellColor = Color.blue;
 
         private MouseManager mouseManager;
         private Cell[,] grid;
         private GridPathfinder pathfinder;
+        private GridReachability reachability;
 
         private Cell hoveredCell;
         private Cell selectedCell;
@@ -29,6 +32,7 @@ namespace Gameplay.Combat.Grid
         public Cell HoveredCell => hoveredCell;
         public CellOccupant OccupantSelected => occupantSelected;
         public GridPathfinder Pathfinder => pathfinder;
+        public GridReachability Reachability => reachability;
 
         void OnValidate()
         {
@@ -40,6 +44,7 @@ namespace Gameplay.Combat.Grid
         {
             SetUpGrid();
             pathfinder = new GridPathfinder(grid);
+            reachability = new GridReachability(grid);
         }
 
         void Start()
@@ -141,6 +146,9 @@ namespace Gameplay.Combat.Grid
             {
                 SetCellOccupant(cell);
 
+                // Met à jour l'état de "atteignable" de la cellule.
+                cell.SetIsReachable(reachability != null && reachability.ReachableCells.Contains(cell));
+
                 // Met à jour l'état de survol et de sélection de la cellule.
                 cell.SetIsHovered(cell == hoveredCell);
 
@@ -213,6 +221,12 @@ namespace Gameplay.Combat.Grid
                 if (cell.IsObstacle) Gizmos.color = Color.black;
                 
                 Gizmos.DrawSphere(cell.WorldPosition, occupiedPointRadius);
+
+                if (cell.IsReachable) 
+                {
+                    Gizmos.color = reachableCellColor;
+                    Gizmos.DrawCube(cell.WorldPosition, Vector3.one * reachablePointRadius);
+                }
             }
 
             /// Dessine le chemin prévisualisé si disponible.

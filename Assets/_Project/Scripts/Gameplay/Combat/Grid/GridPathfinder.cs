@@ -100,8 +100,12 @@ namespace Gameplay.Combat.Grid
                 foreach (Vector2Int direction in directions)
                 {
                     Vector2Int next = current + direction;
+                    
+                    // Ignore les cellules en dehors de la grille.
                     if (next.x < 0 || next.x >= width || next.y < 0 || next.y >= height)
                         continue;
+
+                    // Ignore les cellules déjà visitées ou les obstacles.
                     if (visited[next.x, next.y] || grid[next.x, next.y].IsObstacle)
                         continue;
 
